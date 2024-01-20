@@ -17,12 +17,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 147, 229, 250),
+          seedColor: Color.fromARGB(255, 0, 193, 241),
           brightness: Brightness.dark,
-          surface: const Color.fromARGB(255, 42, 51, 59),
+          surface: Color.fromARGB(255, 255, 181, 9),
         ),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 50, 58, 60),
-      ),
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)   ),
       home:const  GroceryList(),
     );
   }

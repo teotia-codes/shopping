@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shopping/data/categories.dart';
 import 'package:shopping/models/category.dart';
-
+import 'package:shopping/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -20,24 +21,30 @@ class _NewItemState extends State<NewItem> {
   var enteredName = '';
   var enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
-  void saveItem() async{
+  void saveItem() async {
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
-      final url = Uri.https('flutternoobie-default-rtdb.firebaseio.com','shopping.json');          //https creates a url that points to the backend server. 
-    final response =  await http.post(url,headers: {
-        'Content-Type':'application/json'
-      },
-      body: json.encode(
-        {
-          'name':enteredName,
-          'quantity':enteredQuantity,
-          'category':_selectedCategory.title,
-        }
-      ),);
-      if(!context.mounted){
+      final url = Uri.https('flutternoobie-default-rtdb.firebaseio.com',
+          'shopping.json'); //https creates a url that points to the backend server.
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'name': enteredName,
+          'quantity': enteredQuantity,
+          'category': _selectedCategory.title,
+        }),
+      );
+      final Map<String, dynamic> resData = json.decode(response.body);
+      if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(GroceryItem(
+        id: resData['name'],
+        name: enteredName,
+        quantity: enteredQuantity,
+        category: _selectedCategory,
+      ));
     }
   }
 
@@ -45,7 +52,7 @@ class _NewItemState extends State<NewItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add a new item!'),
+        title:  Text('Add a new item!',style: GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
@@ -56,9 +63,11 @@ class _NewItemState extends State<NewItem> {
               children: [
                 TextFormField(
                   maxLength: 50,
-                  decoration: const InputDecoration(
-                    label: Text('Name'),
+                  decoration: InputDecoration(
+                    
+                    label: Text('Name',style: GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.bold)),
                   ),
+                  style:const TextStyle(color: Colors.black),
                   validator: (value) {
                     if (value == null ||
                         value.isEmpty ||
@@ -77,11 +86,13 @@ class _NewItemState extends State<NewItem> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        decoration: const InputDecoration(
-                          label: Text('Quantity'),
+                        decoration:  InputDecoration(
+                          label: Text('Quantity',style: GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.bold),),
                         ),
+                        style: const TextStyle(color: Colors.black),
                         keyboardType: TextInputType.number,
                         initialValue: enteredQuantity.toString(),
+                       
                         validator: (value) {
                           if (value == null ||
                               value.isEmpty ||
@@ -102,6 +113,7 @@ class _NewItemState extends State<NewItem> {
                     ),
                     Expanded(
                       child: DropdownButtonFormField(
+                        dropdownColor: Colors.white,
                           value: _selectedCategory,
                           items: [
                             for (final category in categories
@@ -118,7 +130,7 @@ class _NewItemState extends State<NewItem> {
                                     const SizedBox(
                                       width: 22,
                                     ),
-                                    Text(category.value.title),
+                                    Text(category.value.title,style: GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.normal)),
                                   ],
                                 ),
                               ),
@@ -139,10 +151,10 @@ class _NewItemState extends State<NewItem> {
                       onPressed: () {
                         formkey.currentState!.reset();
                       },
-                      child: const Text('Reset'),
+                      child: Text('Reset',style: GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.bold)),
                     ),
                     ElevatedButton(
-                        onPressed: saveItem, child: const Text('Add Item'))
+                        onPressed: saveItem, child: Text('Add Item',style: GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.bold)))
                   ],
                 )
               ],
